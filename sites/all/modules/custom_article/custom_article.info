@@ -1,0 +1,5 @@
+name = Custom Article
+description = Articles allow comments without subject line
+package = Cameron Modules
+core = 7.x
+files[] = custom_article.module
