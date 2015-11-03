@@ -1,4 +1,5 @@
 <?php
+
 function bakery_user_menu() {
     $items['welcome'] = array(
         'title' => 'Hi There!',

@@ -1,0 +1,30 @@
+<?php
+
+// Tests the functionality of the Welcome page
+
+class BakeryUserTestCase extends DrupalWebTestCase {
+    // protected $privileged_user;
+
+    public static function getInfo() {
+        return array(
+            'name' => 'Bakery User Test Example',
+            'description' => 'Ensure a successful display of the Welcome page',
+            'group' => 'Epicodus Example Tests',
+        );
+    }
+
+    public function setUp() {
+        parent::setUp(array('bakery_user'));
+
+        // $this->privileged_user = $this->drupalCreateUser(array(
+        //     'redirect user to bakery_user Welcome page',
+        //     'extra special edit any bakery_user',
+        // ));
+        // $this->drupalLogin($this->privileged_user);
+    }
+
+    public function testWelcomePageNavigation() {
+        $this->drupalGet('welcome');
+        $this->assertText("Welcome to Cameron's Bakery!", 'The text on the page is correct.');
+    }
+}
