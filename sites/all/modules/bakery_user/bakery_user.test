@@ -2,12 +2,12 @@
 
 // Tests the functionality of the Welcome page
 
-class BakeryUserTestCase extends DrupalWebTestCase {
+class BakeryUserTests extends DrupalWebTestCase {
     // protected $privileged_user;
 
     public static function getInfo() {
         return array(
-            'name' => 'Bakery User Test Example',
+            'name' => 'Bakery User Tests',
             'description' => 'Ensure a successful display of the Welcome page',
             'group' => 'Epicodus Example Tests',
         );
@@ -16,15 +16,43 @@ class BakeryUserTestCase extends DrupalWebTestCase {
     public function setUp() {
         parent::setUp(array('bakery_user'));
 
-        // $this->privileged_user = $this->drupalCreateUser(array(
-        //     'redirect user to bakery_user Welcome page',
-        //     'extra special edit any bakery_user',
-        // ));
-        // $this->drupalLogin($this->privileged_user);
+        $user = $this->drupalCreateSpecifiedUser('administrator');
+        $this->drupalLogin($user);
+        $this->createTestingPage();
     }
 
-    public function testWelcomePageNavigation() {
-        $this->drupalGet('welcome');
-        $this->assertText("Welcome to Cameron's Bakery!", 'The text on the page is correct.');
+    public function testLoginWelcome() {
+        $user = $this->drupalCreateSpecifiedUser('authenticated');
+        $this->drupalLogin($user);
+        $this->assertText("Welcome to Cameron's Bakery!", 'The user was successfully redirected. Woot woot!');
     }
+
+    public function testNewPage() {
+        $this->drupalGet('pagetest');
+        $this->assertText("1, 2, 3!", 'The text on the page is correct, yippie!');
+    }
+
+    public function createTestingPage() {
+        //$info = the information needed to create the basic page at the url `pagetest`.
+        $info = array();
+        $info['title'] = "Testing!";
+        $info["body[und][0][value]"] = "1, 2, 3!";
+
+        //save the new page
+        $this->drupalPost('node/add/page', $info, t('Save'));
+
+        //set new page to the correct path. We know this will be node/1 because we are starting from scratch.
+        $path['source'] = 'node/1';
+        $path['alias'] = 'pagetest';
+        path_save($path);
+    }
+
+    public function drupalCreateSpecifiedUser($role, array $permissions = array()) {
+        $roles = user_roles();
+        $index = array_search($role, $roles);
+        $user = $this->drupalCreateUser($permissions);
+        $user->roles[$index] = $role;
+        return user_save($user);
+    }
+
 }
